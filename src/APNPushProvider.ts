@@ -49,7 +49,13 @@ export class APNPushProvider {
       }
       this.session.once('connect', ()=> {
         this.pingTimer = setInterval(()=> {
-          this.session.ping(()=> { });
+          this.session.ping((e)=> {
+            if (e) {
+              clearTimeout(this.pingTimer);
+              this.session.destroy();
+              delete this.session;
+            }
+          });
         }, pingInterval);
       })
     }
